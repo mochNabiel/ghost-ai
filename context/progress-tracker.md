@@ -9,7 +9,7 @@ change.
 
 ## Current Goal
 
-- 03 — Auth wiring and route protection completed
+- 04 — Project dialogs and editor home screen completed
 
 ## Completed
 
@@ -22,6 +22,8 @@ change.
 - Verification follow-up: `bun run lint` passes and `bun run build` passes.
 - `03-auth`: Wrapped the app in `ClerkProvider` with Clerk's dark theme and app CSS-variable appearance overrides.
 - `03-auth` routes: Added minimal sign-in and sign-up pages, protected-first root `proxy.ts`, root redirect behavior, protected `/editor` workspace route, and Clerk `UserButton` in the editor navbar.
+- Verification: `bun run lint` passes and `bun run build` passes.
+- `04-project-dialogs`: Added the editor home empty state, mocked project lists, owned-project rename/delete sidebar actions, create/rename/delete dialogs, slug preview, and mobile sidebar scrim.
 - Verification: `bun run lint` passes and `bun run build` passes.
 
 ## In Progress
@@ -51,3 +53,4 @@ change.
 - Re-opened `02-editor` for requirement parity: migrate project sidebar to shadcn sidebar primitives.
 - Completed `02-editor` follow-up and fixed generated `use-mobile` hook to satisfy current lint rules.
 - Started and completed `03-auth` in this session using Clerk v7, `@clerk/ui` dark theme, Next.js 16 `proxy.ts`, and the existing Clerk environment variable names.
+- Started and completed `04-project-dialogs` in this session with local mock project state only; no API routes or persistence were added.
