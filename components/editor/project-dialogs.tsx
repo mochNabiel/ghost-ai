@@ -66,7 +66,7 @@ export function ProjectDialogs({
         <DialogContent className="rounded-3xl border-surface-border bg-elevated text-copy-primary sm:max-w-md">
           <form onSubmit={handleCreateSubmit} className="flex flex-col gap-5">
             <DialogHeader>
-              <DialogTitle>Create Project</DialogTitle>
+              <DialogTitle className="text-primary">Create Project</DialogTitle>
               <DialogDescription>
                 Start a new architecture workspace with a readable project slug.
               </DialogDescription>
@@ -82,6 +82,7 @@ export function ProjectDialogs({
                 value={projectName}
                 onChange={(event) => setProjectName(event.target.value)}
                 placeholder="Architecture workspace"
+                className="text-primary"
               />
               <p className="text-xs text-copy-muted">
                 Slug preview: <span className="font-mono text-brand">{slugPreview}</span>
@@ -139,9 +140,9 @@ export function ProjectDialogs({
         <DialogContent className="rounded-3xl border-surface-border bg-elevated text-copy-primary sm:max-w-md">
           <form onSubmit={handleDeleteSubmit} className="flex flex-col gap-5">
             <DialogHeader>
-              <DialogTitle>Delete Project</DialogTitle>
+              <DialogTitle className="text-primary">Delete Project</DialogTitle>
               <DialogDescription>
-                Delete {activeProject?.name ?? "this project"} from your mock project list?
+                Delete <span className="text-primary">{activeProject?.slug ?? "this project"}</span> from your mock project list?
               </DialogDescription>
             </DialogHeader>
 

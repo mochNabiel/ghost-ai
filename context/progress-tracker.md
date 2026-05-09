@@ -9,7 +9,7 @@ change.
 
 ## Current Goal
 
-- 04 — Project dialogs and editor home screen completed
+- 05 — Prisma project data models, client singleton, and migration completed
 
 ## Completed
 
@@ -27,6 +27,8 @@ change.
 - Verification: `bun run lint` passes and `bun run build` passes.
 - `04-project-dialogs` mobile fix: Reworked the project sidebar shell so mobile and desktop both use the editor-controlled `isOpen` state, with a responsive panel width and mobile scrim.
 - Verification mobile fix: `bun run lint` passes and `bun run build` passes.
+- `05-prisma`: Added project metadata schema models, Prisma multi-file schema loading, cached Prisma client singleton, generated Prisma client output, and applied the initial `init_projects` migration.
+- Verification: `bunx --bun prisma validate` passes, `npm run lint` passes, and `npm run build` passes.
 
 ## In Progress
 
@@ -57,3 +59,4 @@ change.
 - Started and completed `03-auth` in this session using Clerk v7, `@clerk/ui` dark theme, Next.js 16 `proxy.ts`, and the existing Clerk environment variable names.
 - Started and completed `04-project-dialogs` in this session with local mock project state only; no API routes or persistence were added.
 - Fixed mobile responsiveness for the project sidebar after finding the shadcn sidebar primitive used separate internal mobile open state from the editor shell.
+- Started and completed `05-prisma` in this session, including `Project`, `ProjectCollaborator`, `ProjectStatus`, Prisma client generation, and the applied PostgreSQL migration.
