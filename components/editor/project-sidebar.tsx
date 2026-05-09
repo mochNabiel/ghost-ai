@@ -4,12 +4,10 @@ import { Pencil, Plus, Trash2, X } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
-  Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarGroup,
   SidebarHeader,
-  SidebarProvider,
 } from "@/components/ui/sidebar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { MockProject } from "@/hooks/use-project-dialogs";
@@ -98,29 +96,23 @@ export function ProjectSidebar({
   sharedProjects,
 }: ProjectSidebarProps) {
   return (
-    <SidebarProvider
-      open={isOpen}
-      onOpenChange={(open) => {
-        if (!open) {
-          onClose();
-        }
-      }}
-      className="pointer-events-none absolute inset-0 z-30"
-    >
+    <div className="pointer-events-none absolute inset-0 z-30">
       <button
         type="button"
         aria-label="Close project sidebar"
         onClick={onClose}
         className={cn(
-          "pointer-events-auto fixed inset-x-0 bottom-0 top-14 bg-base/70 backdrop-blur-sm md:hidden",
-          !isOpen && "hidden",
+          "pointer-events-auto fixed inset-x-0 bottom-0 top-14 bg-base/70 backdrop-blur-sm transition-opacity md:hidden",
+          isOpen ? "opacity-100" : "hidden opacity-0",
         )}
       />
-      <Sidebar
-        side="left"
-        variant="floating"
-        collapsible="offcanvas"
-        className="pointer-events-auto top-14 h-[calc(100svh-3.5rem)] p-0 [&>[data-sidebar=sidebar]]:border-r [&>[data-sidebar=sidebar]]:border-surface-border [&>[data-sidebar=sidebar]]:bg-surface/95 [&>[data-sidebar=sidebar]]:backdrop-blur-md [&>[data-sidebar=sidebar]]:ring-0"
+
+      <aside
+        aria-label="Project sidebar"
+        className={cn(
+          "pointer-events-auto fixed bottom-0 left-0 top-14 flex w-[min(20rem,calc(100vw-1rem))] flex-col border-r border-surface-border bg-surface/95 text-copy-primary backdrop-blur-md transition-transform duration-200 ease-out md:w-64",
+          isOpen ? "translate-x-0" : "-translate-x-full",
+        )}
       >
         <SidebarHeader className="p-4">
           <div className="flex items-center justify-between">
@@ -176,7 +168,7 @@ export function ProjectSidebar({
             New Project
           </Button>
         </SidebarFooter>
-      </Sidebar>
-    </SidebarProvider>
+      </aside>
+    </div>
   );
 }

@@ -25,6 +25,8 @@ change.
 - Verification: `bun run lint` passes and `bun run build` passes.
 - `04-project-dialogs`: Added the editor home empty state, mocked project lists, owned-project rename/delete sidebar actions, create/rename/delete dialogs, slug preview, and mobile sidebar scrim.
 - Verification: `bun run lint` passes and `bun run build` passes.
+- `04-project-dialogs` mobile fix: Reworked the project sidebar shell so mobile and desktop both use the editor-controlled `isOpen` state, with a responsive panel width and mobile scrim.
+- Verification mobile fix: `bun run lint` passes and `bun run build` passes.
 
 ## In Progress
 
@@ -54,3 +56,4 @@ change.
 - Completed `02-editor` follow-up and fixed generated `use-mobile` hook to satisfy current lint rules.
 - Started and completed `03-auth` in this session using Clerk v7, `@clerk/ui` dark theme, Next.js 16 `proxy.ts`, and the existing Clerk environment variable names.
 - Started and completed `04-project-dialogs` in this session with local mock project state only; no API routes or persistence were added.
+- Fixed mobile responsiveness for the project sidebar after finding the shadcn sidebar primitive used separate internal mobile open state from the editor shell.
