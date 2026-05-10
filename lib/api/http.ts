@@ -1,0 +1,25 @@
+import { auth } from "@clerk/nextjs/server";
+
+export interface ApiErrorBody {
+  error: {
+    message: string;
+  };
+}
+
+export function jsonError(message: string, status: number): Response {
+  return Response.json({ error: { message } }, { status });
+}
+
+export async function requireUserId(): Promise<string | null> {
+  const { userId } = await auth();
+
+  return userId ?? null;
+}
+
+export async function parseJsonBody<T>(request: Request): Promise<T | null> {
+  try {
+    return (await request.json()) as T;
+  } catch {
+    return null;
+  }
+}

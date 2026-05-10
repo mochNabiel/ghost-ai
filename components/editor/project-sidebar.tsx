@@ -10,29 +10,32 @@ import {
   SidebarHeader,
 } from "@/components/ui/sidebar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import type { MockProject } from "@/hooks/use-project-dialogs";
+import type { ProjectListItem } from "@/lib/project-data";
 import { cn } from "@/lib/utils";
 
 interface ProjectSidebarProps {
   isOpen: boolean;
   onClose: () => void;
   onCreateProject: () => void;
-  onDeleteProject: (project: MockProject) => void;
-  onRenameProject: (project: MockProject) => void;
-  ownedProjects: MockProject[];
-  sharedProjects: MockProject[];
+  onDeleteProject: (project: ProjectListItem) => void;
+  onOpenProject: (projectId: string) => void;
+  onRenameProject: (project: ProjectListItem) => void;
+  ownedProjects: ProjectListItem[];
+  sharedProjects: ProjectListItem[];
 }
 
 interface ProjectListProps {
   emptyText: string;
-  onDeleteProject: (project: MockProject) => void;
-  onRenameProject: (project: MockProject) => void;
-  projects: MockProject[];
+  onDeleteProject?: (project: ProjectListItem) => void;
+  onOpenProject: (projectId: string) => void;
+  onRenameProject?: (project: ProjectListItem) => void;
+  projects: ProjectListItem[];
 }
 
 function ProjectList({
   emptyText,
   onDeleteProject,
+  onOpenProject,
   onRenameProject,
   projects,
 }: ProjectListProps) {
@@ -51,12 +54,12 @@ function ProjectList({
           key={project.id}
           className="flex min-h-12 items-center gap-2 rounded-xl border border-surface-border bg-subtle px-3 py-2"
         >
-          <button type="button" className="min-w-0 flex-1 text-left">
+          <button type="button" className="min-w-0 flex-1 text-left" onClick={() => onOpenProject(project.id)}>
             <span className="block truncate text-sm font-medium text-copy-primary">{project.name}</span>
-            <span className="block truncate text-xs text-copy-muted">{project.slug}</span>
+            <span className="block truncate text-xs text-copy-muted">{project.id}</span>
           </button>
 
-          {project.access === "owned" ? (
+          {onRenameProject && onDeleteProject ? (
             <div className="flex shrink-0 items-center gap-1">
               <Button
                 type="button"
@@ -91,6 +94,7 @@ export function ProjectSidebar({
   onClose,
   onCreateProject,
   onDeleteProject,
+  onOpenProject,
   onRenameProject,
   ownedProjects,
   sharedProjects,
@@ -145,6 +149,7 @@ export function ProjectSidebar({
                 <ProjectList
                   emptyText="No projects yet."
                   onDeleteProject={onDeleteProject}
+                  onOpenProject={onOpenProject}
                   onRenameProject={onRenameProject}
                   projects={ownedProjects}
                 />
@@ -153,8 +158,7 @@ export function ProjectSidebar({
               <TabsContent value="shared" className="mt-3 h-full">
                 <ProjectList
                   emptyText="No shared projects yet."
-                  onDeleteProject={onDeleteProject}
-                  onRenameProject={onRenameProject}
+                  onOpenProject={onOpenProject}
                   projects={sharedProjects}
                 />
               </TabsContent>

@@ -9,7 +9,7 @@ change.
 
 ## Current Goal
 
-- 05 — Prisma project data models, client singleton, and migration completed
+- 07 — Editor home wired to real project APIs and server-fetched project lists
 
 ## Completed
 
@@ -29,6 +29,9 @@ change.
 - Verification mobile fix: `bun run lint` passes and `bun run build` passes.
 - `05-prisma`: Added project metadata schema models, Prisma multi-file schema loading, cached Prisma client singleton, generated Prisma client output, and applied the initial `init_projects` migration.
 - Verification: `bunx --bun prisma validate` passes, `npm run lint` passes, and `npm run build` passes.
+- `06-project-apis`: Added authenticated REST routes for project list/create/rename/delete with owner enforcement on rename/delete and explicit `401`/`403` handling.
+- `07-wire-editor-home`: Replaced mock project state with server-fetched owned/shared lists, added `use-project-actions` hook for create/rename/delete API mutations, wired sidebar/dialog interactions, and added `/editor/[projectId]` navigation/redirect behavior.
+- Verification: `npm run build` passes.
 
 ## In Progress
 
@@ -60,3 +63,6 @@ change.
 - Started and completed `04-project-dialogs` in this session with local mock project state only; no API routes or persistence were added.
 - Fixed mobile responsiveness for the project sidebar after finding the shadcn sidebar primitive used separate internal mobile open state from the editor shell.
 - Started and completed `05-prisma` in this session, including `Project`, `ProjectCollaborator`, `ProjectStatus`, Prisma client generation, and the applied PostgreSQL migration.
+- Started and completed `06-project-apis` in this session with route handlers at `/api/projects` and `/api/projects/[projectId]`, plus shared API auth/JSON parsing helpers.
+- Started and completed `07-wire-editor-home` in this session by introducing server-side project list fetching, replacing mock dialog mutations with real API calls, and adding workspace route wiring at `/editor/[projectId]`.
+- Follow-up update: project create and rename now regenerate and persist `project.id` from room ID preview instead of relying on Prisma `cuid()`, with redirect to `/editor/{projectId}` after create and after renaming the active workspace.

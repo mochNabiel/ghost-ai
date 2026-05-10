@@ -12,12 +12,12 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import type { MockProject } from "@/hooks/use-project-dialogs";
+import type { ProjectListItem } from "@/lib/project-data";
 
 interface ProjectDialogsProps {
   activeDialog: {
     type: "create" | "rename" | "delete";
-    project?: MockProject;
+    project?: ProjectListItem;
   } | null;
   isLoading: boolean;
   onClose: () => void;
@@ -26,7 +26,7 @@ interface ProjectDialogsProps {
   onRename: () => Promise<void>;
   projectName: string;
   setProjectName: (name: string) => void;
-  slugPreview: string;
+  roomIdPreview: string;
 }
 
 export function ProjectDialogs({
@@ -38,7 +38,7 @@ export function ProjectDialogs({
   onRename,
   projectName,
   setProjectName,
-  slugPreview,
+  roomIdPreview,
 }: ProjectDialogsProps) {
   const isCreateOpen = activeDialog?.type === "create";
   const isRenameOpen = activeDialog?.type === "rename";
@@ -85,7 +85,7 @@ export function ProjectDialogs({
                 className="text-primary"
               />
               <p className="text-xs text-copy-muted">
-                Slug preview: <span className="font-mono text-brand">{slugPreview}</span>
+                Room ID preview: <span className="font-mono text-brand">{roomIdPreview}</span>
               </p>
             </div>
 
@@ -122,6 +122,9 @@ export function ProjectDialogs({
                 onChange={(event) => setProjectName(event.target.value)}
                 className="text-primary"
               />
+              <p className="text-xs text-copy-muted">
+                Room ID preview: <span className="font-mono text-brand">{roomIdPreview}</span>
+              </p>
             </div>
 
             <DialogFooter>
@@ -142,7 +145,7 @@ export function ProjectDialogs({
             <DialogHeader>
               <DialogTitle className="text-primary">Delete Project</DialogTitle>
               <DialogDescription>
-                Delete <span className="text-primary">{activeProject?.slug ?? "this project"}</span> from your mock project list?
+                Delete <span className="text-primary">{activeProject?.name ?? "this project"}</span> from your projects?
               </DialogDescription>
             </DialogHeader>
 
