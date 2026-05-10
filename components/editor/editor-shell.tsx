@@ -31,7 +31,7 @@ export function EditorShell({ activeProjectId, ownedProjects, sharedProjects }: 
         isSidebarOpen={isSidebarOpen}
         onToggleSidebar={() => setIsSidebarOpen((current) => !current)}
       />
-      <main className="relative flex-1">
+      <main className="relative flex min-h-0 flex-1 gap-3 p-3">
         <ProjectSidebar
           activeProjectId={activeProjectId}
           isOpen={isSidebarOpen}
@@ -42,8 +42,9 @@ export function EditorShell({ activeProjectId, ownedProjects, sharedProjects }: 
           onRenameProject={projectActions.openRenameDialog}
           ownedProjects={ownedProjects}
           sharedProjects={sharedProjects}
+          variant="docked"
         />
-        <section className="h-full bg-base">
+        <section className="min-h-0 flex-1">
           <EditorHome onCreateProject={projectActions.openCreateDialog} />
         </section>
       </main>
