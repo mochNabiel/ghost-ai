@@ -1,37 +1,17 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link2, Loader2, Mail, Trash2, UserRound } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { useShareCollaborators } from "@/hooks/use-share-collaborators";
 
 interface ShareDialogProps {
   isOpen: boolean;
   onClose: () => void;
   projectId: string;
-}
-
-interface Person {
-  avatarUrl: string | null;
-  displayName: string | null;
-  email: string;
-  id: string;
-}
-
-type ViewerRole = "owner" | "collaborator";
-
-interface CollaboratorsResponse {
-  collaborators: Person[];
-  owner: Person | null;
-  role: ViewerRole;
-}
-
-interface ApiErrorResponse {
-  error?: {
-    message?: string;
-  };
 }
 
 function RoleBadge({ label, variant }: { label: string; variant: "owner" | "collaborator" }) {
@@ -48,25 +28,22 @@ function RoleBadge({ label, variant }: { label: string; variant: "owner" | "coll
   );
 }
 
-async function readApiError(response: Response) {
-  try {
-    const payload = (await response.json()) as ApiErrorResponse;
-    return payload.error?.message ?? "Request failed";
-  } catch {
-    return "Request failed";
-  }
-}
-
 export function ShareDialog({ isOpen, onClose, projectId }: ShareDialogProps) {
-  const [collaborators, setCollaborators] = useState<Person[]>([]);
-  const [owner, setOwner] = useState<Person | null>(null);
   const [email, setEmail] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
   const [isCopying, setIsCopying] = useState(false);
-  const [isInviting, setIsInviting] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const [removingEmail, setRemovingEmail] = useState<string | null>(null);
-  const [role, setRole] = useState<ViewerRole>("collaborator");
+  const {
+    collaborators,
+    errorMessage,
+    inviteCollaborator,
+    isLoading,
+    isMutating,
+    loadCollaborators,
+    owner,
+    removeCollaborator,
+    resetCache,
+    role,
+  } = useShareCollaborators(projectId);
 
   const isOwner = role === "owner";
   const peopleTotal = collaborators.length + (owner ? 1 : 0);
@@ -78,88 +55,33 @@ export function ShareDialog({ isOpen, onClose, projectId }: ShareDialogProps) {
     return `${window.location.origin}/editor/${encodeURIComponent(projectId)}`;
   }, [projectId]);
 
-  const loadCollaborators = useCallback(async () => {
-    setIsLoading(true);
-    setErrorMessage("");
-    try {
-      const response = await fetch(`/api/projects/${encodeURIComponent(projectId)}/collaborators`, {
-        method: "GET",
-      });
-
-      if (!response.ok) {
-        setErrorMessage(await readApiError(response));
-        return;
-      }
-
-      const payload = (await response.json()) as CollaboratorsResponse;
-      setCollaborators(payload.collaborators);
-      setOwner(payload.owner);
-      setRole(payload.role);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [projectId]);
-
   useEffect(() => {
-    if (!isOpen) {
-      return;
+    if (isOpen) {
+      const timer = window.setTimeout(() => {
+        void loadCollaborators(false);
+      }, 0);
+
+      return () => {
+        window.clearTimeout(timer);
+      };
     }
-
-    const timer = window.setTimeout(() => {
-      void loadCollaborators();
-    }, 0);
-
-    return () => {
-      window.clearTimeout(timer);
-    };
   }, [isOpen, loadCollaborators]);
 
+  useEffect(() => {
+    resetCache();
+  }, [projectId, resetCache]);
+
   async function handleInvite() {
-    if (!email.trim() || !isOwner) {
-      return;
-    }
-
-    setIsInviting(true);
-    setErrorMessage("");
-    try {
-      const response = await fetch(`/api/projects/${encodeURIComponent(projectId)}/collaborators`, {
-        body: JSON.stringify({ email: email.trim() }),
-        headers: { "Content-Type": "application/json" },
-        method: "POST",
-      });
-
-      if (!response.ok) {
-        setErrorMessage(await readApiError(response));
-        return;
-      }
-
-      setEmail("");
-      await loadCollaborators();
-    } finally {
-      setIsInviting(false);
-    }
+    if (!email.trim() || !isOwner) return;
+    const success = await inviteCollaborator(email.trim());
+    if (success) setEmail("");
   }
 
   async function handleRemove(targetEmail: string) {
-    if (!isOwner) {
-      return;
-    }
-
+    if (!isOwner) return;
     setRemovingEmail(targetEmail);
-    setErrorMessage("");
     try {
-      const response = await fetch(`/api/projects/${encodeURIComponent(projectId)}/collaborators`, {
-        body: JSON.stringify({ email: targetEmail }),
-        headers: { "Content-Type": "application/json" },
-        method: "DELETE",
-      });
-
-      if (!response.ok) {
-        setErrorMessage(await readApiError(response));
-        return;
-      }
-
-      await loadCollaborators();
+      await removeCollaborator(targetEmail);
     } finally {
       setRemovingEmail(null);
     }
@@ -196,7 +118,7 @@ export function ShareDialog({ isOpen, onClose, projectId }: ShareDialogProps) {
           </div>
         </DialogHeader>
 
-        <div className="space-y-4 px-5 py-4">
+        <div className="space-y-4 px-5 pb-4">
           <div className="rounded-3xl border border-surface-border bg-subtle p-4">
             <div className="flex items-center justify-between gap-2">
               <div>
@@ -232,8 +154,8 @@ export function ShareDialog({ isOpen, onClose, projectId }: ShareDialogProps) {
                     className="pl-9 text-sm"
                   />
                 </div>
-                <Button type="submit" size="sm" disabled={isInviting || !email.trim()}>
-                  {isInviting ? "Inviting..." : "Invite"}
+                <Button type="submit" size="sm" disabled={isMutating || !email.trim()}>
+                  {isMutating ? "Inviting..." : "Invite"}
                 </Button>
               </div>
             </form>
