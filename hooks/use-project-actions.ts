@@ -22,6 +22,10 @@ interface UseProjectActionsOptions {
   activeProjectId?: string;
 }
 
+function getEditorWorkspacePath(roomId: string) {
+  return `/editor/${encodeURIComponent(roomId)}`;
+}
+
 function createSlug(value: string) {
   const slug = value
     .trim()
@@ -87,7 +91,7 @@ export function useProjectActions({ activeProjectId }: UseProjectActionsOptions 
 
       const payload = (await response.json()) as CreatedProjectResponse;
       closeDialog();
-      router.push(`/editor/${payload.project.id}`);
+      router.push(getEditorWorkspacePath(payload.project.id));
     } finally {
       setIsLoading(false);
     }
@@ -117,12 +121,12 @@ export function useProjectActions({ activeProjectId }: UseProjectActionsOptions 
       closeDialog();
 
       if (activeProjectId && project.id === activeProjectId) {
-        router.push(`/editor/${payload.project.id}`);
+        router.push(getEditorWorkspacePath(payload.project.id));
         return;
       }
 
-      if (pathname === `/editor/${project.id}`) {
-        router.push(`/editor/${payload.project.id}`);
+      if (pathname === getEditorWorkspacePath(project.id)) {
+        router.push(getEditorWorkspacePath(payload.project.id));
         return;
       }
 
@@ -157,7 +161,7 @@ export function useProjectActions({ activeProjectId }: UseProjectActionsOptions 
         return;
       }
 
-      if (pathname === `/editor/${project.id}`) {
+      if (pathname === getEditorWorkspacePath(project.id)) {
         router.push("/editor");
         return;
       }

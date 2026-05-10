@@ -9,7 +9,7 @@ change.
 
 ## Current Goal
 
-- 07 — Editor home wired to real project APIs and server-fetched project lists
+- 08 — Editor workspace shell with server-side access checks
 
 ## Completed
 
@@ -31,6 +31,8 @@ change.
 - Verification: `bunx --bun prisma validate` passes, `npm run lint` passes, and `npm run build` passes.
 - `06-project-apis`: Added authenticated REST routes for project list/create/rename/delete with owner enforcement on rename/delete and explicit `401`/`403` handling.
 - `07-wire-editor-home`: Replaced mock project state with server-fetched owned/shared lists, added `use-project-actions` hook for create/rename/delete API mutations, wired sidebar/dialog interactions, and added `/editor/[projectId]` navigation/redirect behavior.
+- Verification: `npm run build` passes.
+- `08-editor-workspace-shell`: Added `/editor/[roomId]` server-side access checks with unauth redirect and `AccessDenied` fallback, created `lib/project-access.ts` helpers, built workspace shell placeholders (navbar, canvas, AI sidebar), and highlighted active room in `ProjectSidebar`.
 - Verification: `npm run build` passes.
 
 ## In Progress
@@ -66,3 +68,5 @@ change.
 - Started and completed `06-project-apis` in this session with route handlers at `/api/projects` and `/api/projects/[projectId]`, plus shared API auth/JSON parsing helpers.
 - Started and completed `07-wire-editor-home` in this session by introducing server-side project list fetching, replacing mock dialog mutations with real API calls, and adding workspace route wiring at `/editor/[projectId]`.
 - Follow-up update: project create and rename now regenerate and persist `project.id` from room ID preview instead of relying on Prisma `cuid()`, with redirect to `/editor/{projectId}` after create and after renaming the active workspace.
+- Started and completed `08-editor-workspace-shell` in this session with new access helper boundaries and a dedicated workspace shell component that keeps canvas/AI integrations as placeholders for later units.
+- Follow-up hotfix: normalized dynamic workspace segment to lowercase (`/editor/[roomid]`) and standardized encoded workspace navigation path generation to prevent intermittent workspace-route 404 after create/rename redirects.

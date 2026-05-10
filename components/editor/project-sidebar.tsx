@@ -14,6 +14,7 @@ import type { ProjectListItem } from "@/lib/project-data";
 import { cn } from "@/lib/utils";
 
 interface ProjectSidebarProps {
+  activeProjectId?: string;
   isOpen: boolean;
   onClose: () => void;
   onCreateProject: () => void;
@@ -22,9 +23,11 @@ interface ProjectSidebarProps {
   onRenameProject: (project: ProjectListItem) => void;
   ownedProjects: ProjectListItem[];
   sharedProjects: ProjectListItem[];
+  variant?: "overlay" | "docked";
 }
 
 interface ProjectListProps {
+  activeProjectId?: string;
   emptyText: string;
   onDeleteProject?: (project: ProjectListItem) => void;
   onOpenProject: (projectId: string) => void;
@@ -33,6 +36,7 @@ interface ProjectListProps {
 }
 
 function ProjectList({
+  activeProjectId,
   emptyText,
   onDeleteProject,
   onOpenProject,
@@ -52,7 +56,10 @@ function ProjectList({
       {projects.map((project) => (
         <div
           key={project.id}
-          className="flex min-h-12 items-center gap-2 rounded-xl border border-surface-border bg-subtle px-3 py-2"
+          className={cn(
+            "flex min-h-12 items-center gap-2 rounded-xl border border-surface-border bg-subtle px-3 py-2",
+            activeProjectId === project.id && "border-brand bg-accent-dim",
+          )}
         >
           <button type="button" className="min-w-0 flex-1 text-left" onClick={() => onOpenProject(project.id)}>
             <span className="block truncate text-sm font-medium text-copy-primary">{project.name}</span>
@@ -90,6 +97,7 @@ function ProjectList({
 }
 
 export function ProjectSidebar({
+  activeProjectId,
   isOpen,
   onClose,
   onCreateProject,
@@ -98,7 +106,83 @@ export function ProjectSidebar({
   onRenameProject,
   ownedProjects,
   sharedProjects,
+  variant = "overlay",
 }: ProjectSidebarProps) {
+  const panel = (
+    <>
+      <SidebarHeader className="p-4">
+        <div className="flex items-center justify-between">
+          <h2 className="text-sm font-semibold text-copy-primary">Projects</h2>
+          <Button
+            variant="ghost"
+            size="icon"
+            aria-label="Close project sidebar"
+            onClick={onClose}
+            className="text-copy-secondary hover:text-copy-primary"
+          >
+            <X className="h-4 w-4" />
+          </Button>
+        </div>
+      </SidebarHeader>
+
+      <SidebarContent className="px-4">
+        <SidebarGroup className="min-h-0 flex-1 p-0">
+          <Tabs defaultValue="my-projects" className="min-h-0 flex-1">
+            <TabsList className="w-full">
+              <TabsTrigger value="my-projects" className="flex-1">
+                My Projects
+              </TabsTrigger>
+              <TabsTrigger value="shared" className="flex-1">
+                Shared
+              </TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="my-projects" className="mt-3 h-full">
+              <ProjectList
+                activeProjectId={activeProjectId}
+                emptyText="No projects yet."
+                onDeleteProject={onDeleteProject}
+                onOpenProject={onOpenProject}
+                onRenameProject={onRenameProject}
+                projects={ownedProjects}
+              />
+            </TabsContent>
+
+            <TabsContent value="shared" className="mt-3 h-full">
+              <ProjectList
+                activeProjectId={activeProjectId}
+                emptyText="No shared projects yet."
+                onOpenProject={onOpenProject}
+                projects={sharedProjects}
+              />
+            </TabsContent>
+          </Tabs>
+        </SidebarGroup>
+      </SidebarContent>
+
+      <SidebarFooter className="p-4">
+        <Button className="w-full" variant="default" onClick={onCreateProject}>
+          <Plus data-icon="inline-start" />
+          New Project
+        </Button>
+      </SidebarFooter>
+    </>
+  );
+
+  if (variant === "docked") {
+    return (
+      <aside
+        aria-label="Project sidebar"
+        className={cn(
+          "hidden min-h-0 shrink-0 overflow-hidden rounded-3xl border border-surface-border bg-surface/95 text-copy-primary backdrop-blur-md transition-[width,opacity] duration-300 ease-out lg:flex lg:flex-col",
+          isOpen ? "lg:w-[16rem] lg:opacity-100" : "lg:w-0 lg:opacity-0 lg:border-transparent",
+        )}
+      >
+        {panel}
+      </aside>
+    );
+  }
+
   return (
     <div className="pointer-events-none absolute inset-0 z-30">
       <button
@@ -106,7 +190,7 @@ export function ProjectSidebar({
         aria-label="Close project sidebar"
         onClick={onClose}
         className={cn(
-          "pointer-events-auto fixed inset-x-0 bottom-0 top-14 bg-base/70 backdrop-blur-sm transition-opacity md:hidden",
+          "pointer-events-auto fixed inset-x-0 bottom-0 top-14 bg-base/70 backdrop-blur-sm transition-opacity lg:hidden",
           isOpen ? "opacity-100" : "hidden opacity-0",
         )}
       />
@@ -114,64 +198,11 @@ export function ProjectSidebar({
       <aside
         aria-label="Project sidebar"
         className={cn(
-          "pointer-events-auto fixed bottom-0 left-0 top-14 flex w-[min(20rem,calc(100vw-1rem))] flex-col border-r border-surface-border bg-surface/95 text-copy-primary backdrop-blur-md transition-transform duration-200 ease-out md:w-64",
+          "pointer-events-auto fixed bottom-0 left-0 top-14 flex w-[min(20rem,calc(100vw-1rem))] flex-col border-r border-surface-border bg-surface/95 text-copy-primary backdrop-blur-md transition-transform duration-200 ease-out lg:w-64",
           isOpen ? "translate-x-0" : "-translate-x-full",
         )}
       >
-        <SidebarHeader className="p-4">
-          <div className="flex items-center justify-between">
-            <h2 className="text-sm font-semibold text-copy-primary">Projects</h2>
-            <Button
-              variant="ghost"
-              size="icon"
-              aria-label="Close project sidebar"
-              onClick={onClose}
-              className="text-copy-secondary hover:text-copy-primary"
-            >
-              <X className="h-4 w-4" />
-            </Button>
-          </div>
-        </SidebarHeader>
-
-        <SidebarContent className="px-4">
-          <SidebarGroup className="min-h-0 flex-1 p-0">
-            <Tabs defaultValue="my-projects" className="min-h-0 flex-1">
-              <TabsList className="w-full">
-                <TabsTrigger value="my-projects" className="flex-1">
-                  My Projects
-                </TabsTrigger>
-                <TabsTrigger value="shared" className="flex-1">
-                  Shared
-                </TabsTrigger>
-              </TabsList>
-
-              <TabsContent value="my-projects" className="mt-3 h-full">
-                <ProjectList
-                  emptyText="No projects yet."
-                  onDeleteProject={onDeleteProject}
-                  onOpenProject={onOpenProject}
-                  onRenameProject={onRenameProject}
-                  projects={ownedProjects}
-                />
-              </TabsContent>
-
-              <TabsContent value="shared" className="mt-3 h-full">
-                <ProjectList
-                  emptyText="No shared projects yet."
-                  onOpenProject={onOpenProject}
-                  projects={sharedProjects}
-                />
-              </TabsContent>
-            </Tabs>
-          </SidebarGroup>
-        </SidebarContent>
-
-        <SidebarFooter className="p-4">
-          <Button className="w-full" variant="default" onClick={onCreateProject}>
-            <Plus data-icon="inline-start" />
-            New Project
-          </Button>
-        </SidebarFooter>
+        {panel}
       </aside>
     </div>
   );

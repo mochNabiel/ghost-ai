@@ -10,6 +10,10 @@ import { ProjectDialogs } from "@/components/editor/project-dialogs";
 import { useProjectActions } from "@/hooks/use-project-actions";
 import type { ProjectListItem } from "@/lib/project-data";
 
+function getEditorWorkspacePath(projectId: string) {
+  return `/editor/${encodeURIComponent(projectId)}`;
+}
+
 interface EditorShellProps {
   activeProjectId?: string;
   ownedProjects: ProjectListItem[];
@@ -29,11 +33,12 @@ export function EditorShell({ activeProjectId, ownedProjects, sharedProjects }: 
       />
       <main className="relative flex-1">
         <ProjectSidebar
+          activeProjectId={activeProjectId}
           isOpen={isSidebarOpen}
           onClose={() => setIsSidebarOpen(false)}
           onCreateProject={projectActions.openCreateDialog}
           onDeleteProject={projectActions.openDeleteDialog}
-          onOpenProject={(projectId) => router.push(`/editor/${projectId}`)}
+          onOpenProject={(projectId) => router.push(getEditorWorkspacePath(projectId))}
           onRenameProject={projectActions.openRenameDialog}
           ownedProjects={ownedProjects}
           sharedProjects={sharedProjects}
