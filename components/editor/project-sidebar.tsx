@@ -61,7 +61,7 @@ function ProjectList({
             activeProjectId === project.id && "border-brand bg-accent-dim",
           )}
         >
-          <button type="button" className="min-w-0 flex-1 text-left" onClick={() => onOpenProject(project.id)}>
+          <button type="button" className="min-w-0 flex-1 text-left cursor-pointer" onClick={() => onOpenProject(project.id)}>
             <span className="block truncate text-sm font-medium text-copy-primary">{project.name}</span>
             <span className="block truncate text-xs text-copy-muted">{project.id}</span>
           </button>
@@ -112,7 +112,7 @@ export function ProjectSidebar({
     <>
       <SidebarHeader className="p-4">
         <div className="flex items-center justify-between">
-          <h2 className="text-sm font-semibold text-copy-primary">Projects</h2>
+          <h2 className="text-lg font-semibold text-copy-primary">Projects</h2>
           <Button
             variant="ghost"
             size="icon"

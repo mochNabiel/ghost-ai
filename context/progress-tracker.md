@@ -70,3 +70,4 @@ change.
 - Follow-up update: project create and rename now regenerate and persist `project.id` from room ID preview instead of relying on Prisma `cuid()`, with redirect to `/editor/{projectId}` after create and after renaming the active workspace.
 - Started and completed `08-editor-workspace-shell` in this session with new access helper boundaries and a dedicated workspace shell component that keeps canvas/AI integrations as placeholders for later units.
 - Follow-up hotfix: normalized dynamic workspace segment to lowercase (`/editor/[roomid]`) and standardized encoded workspace navigation path generation to prevent intermittent workspace-route 404 after create/rename redirects.
+- Follow-up hotfix: replaced `auth.protect()` middleware gate with explicit `isAuthenticated` + `redirectToSignIn()` flow in `proxy.ts` (including `__clerk` matcher) to prevent client-transition workspace requests from returning misleading `404` responses.

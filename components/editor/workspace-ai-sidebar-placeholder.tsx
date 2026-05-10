@@ -57,7 +57,7 @@ export function WorkspaceAiSidebarPlaceholder({
           <p className="text-xs uppercase tracking-[0.12em] text-copy-faint">
             Future hooks
           </p>
-          <p className="mt-3 text-sm leading-7 text-copy-muted">
+          <p className="mt-3 text-sm text-copy-muted">
             Prompt composer, run status, and architecture guidance will attach
             to this sidebar.
           </p>
