@@ -5,8 +5,6 @@ import { useRouter } from "next/navigation"
 import {
   PanelLeftClose,
   PanelLeftOpen,
-  PanelRightClose,
-  PanelRightOpen,
   Share2,
   Sparkles,
 } from "lucide-react"
@@ -14,6 +12,7 @@ import { UserButton } from "@clerk/nextjs"
 
 import { ProjectDialogs } from "@/components/editor/project-dialogs"
 import { ProjectSidebar } from "@/components/editor/project-sidebar"
+import { ShareDialog } from "@/components/editor/share-dialog"
 import { WorkspaceAiSidebarPlaceholder } from "@/components/editor/workspace-ai-sidebar-placeholder"
 import { WorkspaceCanvasPlaceholder } from "@/components/editor/workspace-canvas-placeholder"
 import { Button } from "@/components/ui/button"
@@ -39,6 +38,7 @@ export function EditorWorkspaceShell({
 }: EditorWorkspaceShellProps) {
   const router = useRouter()
   const [isAiSidebarOpen, setIsAiSidebarOpen] = useState(true)
+  const [isShareDialogOpen, setIsShareDialogOpen] = useState(false)
   const [isSidebarOpen, setIsSidebarOpen] = useState(true)
   const projectActions = useProjectActions({ activeProjectId: roomId })
 
@@ -66,7 +66,7 @@ export function EditorWorkspaceShell({
           </span>
         </div>
         <div className="flex min-w-0 flex-1 items-center justify-end gap-2">
-          <Button variant="outline" size="sm">
+          <Button variant="outline" size="sm" onClick={() => setIsShareDialogOpen(true)}>
             <Share2 data-icon="inline-start" />
             Share
           </Button>
@@ -118,6 +118,7 @@ export function EditorWorkspaceShell({
         setProjectName={projectActions.setProjectName}
         roomIdPreview={projectActions.roomIdPreview}
       />
+      <ShareDialog isOpen={isShareDialogOpen} onClose={() => setIsShareDialogOpen(false)} projectId={roomId} />
     </div>
   )
 }

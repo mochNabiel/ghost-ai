@@ -9,7 +9,7 @@ change.
 
 ## Current Goal
 
-- 08 — Editor workspace shell with server-side access checks
+- 09 — Share dialog with collaborator management and Clerk enrichment
 
 ## Completed
 
@@ -33,6 +33,8 @@ change.
 - `07-wire-editor-home`: Replaced mock project state with server-fetched owned/shared lists, added `use-project-actions` hook for create/rename/delete API mutations, wired sidebar/dialog interactions, and added `/editor/[projectId]` navigation/redirect behavior.
 - Verification: `npm run build` passes.
 - `08-editor-workspace-shell`: Added `/editor/[roomId]` server-side access checks with unauth redirect and `AccessDenied` fallback, created `lib/project-access.ts` helpers, built workspace shell placeholders (navbar, canvas, AI sidebar), and highlighted active room in `ProjectSidebar`.
+- Verification: `npm run build` passes.
+- `09-share-dialog`: Added workspace Share dialog with project link copy feedback, owner-only invite/remove actions, collaborator read-only mode, and collaborator list enrichment from Clerk Backend API (display name/avatar fallback to email).
 - Verification: `npm run build` passes.
 
 ## In Progress
@@ -71,3 +73,4 @@ change.
 - Started and completed `08-editor-workspace-shell` in this session with new access helper boundaries and a dedicated workspace shell component that keeps canvas/AI integrations as placeholders for later units.
 - Follow-up hotfix: normalized dynamic workspace segment to lowercase (`/editor/[roomid]`) and standardized encoded workspace navigation path generation to prevent intermittent workspace-route 404 after create/rename redirects.
 - Follow-up hotfix: replaced `auth.protect()` middleware gate with explicit `isAuthenticated` + `redirectToSignIn()` flow in `proxy.ts` (including `__clerk` matcher) to prevent client-transition workspace requests from returning misleading `404` responses.
+- Started and completed `09-share-dialog` in this session by adding `/api/projects/[projectId]/collaborators` list/invite/remove routes with owner checks on mutations, wiring Share UI in the workspace navbar, and enriching collaborator entries from Clerk users by email.
